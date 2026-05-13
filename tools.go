@@ -260,19 +260,7 @@ func taskButton(t client, instances []client, position *string) *gtk.Box {
 			btnEvent := e.AsButton()
 			if btnEvent.Type() == gdk.ButtonReleaseType || btnEvent.Type() == gdk.TouchEndType {
 				if btnEvent.Button() == 1 || btnEvent.Type() == gdk.TouchEndType {
-					cmd := fmt.Sprintf("dispatch focuswindow address:%s", t.Address)
-					if strings.HasPrefix(t.Workspace.Name, "special") {
-						_, specialName, _ := strings.Cut(t.Workspace.Name, "special:")
-						cmd = fmt.Sprintf("dispatch togglespecialworkspace %s", specialName)
-					}
-					reply, _ := hyprctl(cmd)
-					log.Debugf("%s -> %s", cmd, reply)
-
-					// fix #14
-					cmd = "dispatch bringactivetotop"
-					reply, _ = hyprctl(cmd)
-					log.Debugf("%s -> %s", cmd, reply)
-
+					focusClient(t)
 					return true
 				} else if btnEvent.Button() == 2 {
 					launch(t.Class)
@@ -323,25 +311,14 @@ func clientMenu(class string, instances []client) gtk.Menu {
 		if len(title) > 25 {
 			title = title[:25]
 		}
-		wsName := instance.Workspace.Name
 		var label *gtk.Label
 		label = gtk.NewLabel(fmt.Sprintf("%s (%v)", title, instance.Workspace.Name))
 		hbox.PackStart(label, false, false, 0)
 		menuItem.Add(hbox)
 		menu.Append(menuItem)
-		a := instance.Address
+		instance := instance
 		menuItem.Connect("activate", func() {
-			cmd := fmt.Sprintf("dispatch focuswindow address:%s", a)
-			if strings.HasPrefix(wsName, "special") {
-				_, specialName, _ := strings.Cut(wsName, "special:")
-				cmd = fmt.Sprintf("dispatch togglespecialworkspace %s", specialName)
-			}
-			reply, _ := hyprctl(cmd)
-			log.Debugf("%s -> %s", cmd, reply)
-
-			cmd = "dispatch bringactivetotop"
-			reply, _ = hyprctl(cmd)
-			log.Debugf("%s -> %s", cmd, reply)
+			focusClient(instance)
 		})
 
 	}
