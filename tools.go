@@ -5,16 +5,17 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/diamondburned/gotk4/pkg/gdk/v3"
-	"github.com/diamondburned/gotk4/pkg/gdkpixbuf/v2"
-	"github.com/diamondburned/gotk4/pkg/glib/v2"
-	"github.com/diamondburned/gotk4/pkg/gtk/v3"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/diamondburned/gotk4/pkg/gdk/v3"
+	"github.com/diamondburned/gotk4/pkg/gdkpixbuf/v2"
+	"github.com/diamondburned/gotk4/pkg/glib/v2"
+	"github.com/diamondburned/gotk4/pkg/gtk/v3"
+	log "github.com/sirupsen/logrus"
 )
 
 func taskInstances(ID string) []client {
@@ -260,7 +261,7 @@ func taskButton(t client, instances []client, position *string) *gtk.Box {
 			btnEvent := e.AsButton()
 			if btnEvent.Type() == gdk.ButtonReleaseType || btnEvent.Type() == gdk.TouchEndType {
 				if btnEvent.Button() == 1 || btnEvent.Type() == gdk.TouchEndType {
-					focusClient(t)
+					focusWindow(t.Address)
 					return true
 				} else if btnEvent.Button() == 2 {
 					launch(t.Class)
@@ -318,7 +319,7 @@ func clientMenu(class string, instances []client) gtk.Menu {
 		menu.Append(menuItem)
 		instance := instance
 		menuItem.Connect("activate", func() {
-			focusClient(instance)
+			focusWindow(instance.Address)
 		})
 
 	}
@@ -339,16 +340,11 @@ func clientMenuContext(class string, instances []client) gtk.Menu {
 		image := gtk.NewImageFromIconName(iconName, int(gtk.IconSizeMenu))
 		hbox.PackStart(image, false, false, 0)
 		title := instance.Title
+
 		if len(title) > 25 {
 			title = title[:25]
 		}
-		// Clean non-ASCII chars
-		//title = strings.Map(func(r rune) rune {
-		//	if r > unicode.MaxASCII {
-		//		return -1
-		//	}
-		//	return r
-		//}, title)
+
 		label := gtk.NewLabel(fmt.Sprintf("%s (%v)", title, instance.Workspace.Name))
 		hbox.PackStart(label, false, false, 0)
 		menuItem.Add(hbox)
@@ -360,25 +356,21 @@ func clientMenuContext(class string, instances []client) gtk.Menu {
 		subitem := gtk.NewMenuItemWithLabel("closewindow")
 		submenu.Append(subitem)
 		subitem.Connect("activate", func() {
-			cmd := fmt.Sprintf("dispatch closewindow address:%s", a)
-			reply, _ := hyprctl(cmd)
-			log.Debugf("%s -> %s", cmd, reply)
+			closeWindow(a)
 		})
 
 		subitem = gtk.NewMenuItemWithLabel("togglefloating")
 		submenu.Append(subitem)
 		subitem.Connect("activate", func() {
-			cmd := fmt.Sprintf("dispatch togglefloating address:%s", a)
-			reply, _ := hyprctl(cmd)
-			log.Debugf("%s -> %s", cmd, reply)
+			toggleFloatingWindow(a)
+			focusWindow(a)
 		})
 
 		subitem = gtk.NewMenuItemWithLabel("fullscreen")
 		submenu.Append(subitem)
 		subitem.Connect("activate", func() {
-			cmd := fmt.Sprintf("dispatch fullscreen address:%s", a)
-			reply, _ := hyprctl(cmd)
-			log.Debugf("%s -> %s", cmd, reply)
+			toggleFullscreenWindow(a)
+			focusWindow(a)
 		})
 
 		s := gtk.NewSeparatorMenuItem()
@@ -388,9 +380,7 @@ func clientMenuContext(class string, instances []client) gtk.Menu {
 			subItem := gtk.NewMenuItemWithLabel(fmt.Sprintf("-> WS %v", i))
 			target := i
 			subItem.Connect("activate", func() {
-				cmd := fmt.Sprintf("dispatch movetoworkspace %v,address:%v", target, a)
-				reply, _ := hyprctl(cmd)
-				log.Debugf("%s -> %s", cmd, reply)
+				moveWindowToWorkspace(a, target)
 			})
 			submenu.Append(subItem)
 		}
@@ -410,10 +400,7 @@ func clientMenuContext(class string, instances []client) gtk.Menu {
 	closeAllWindows.SetLabel("Close all windows")
 	closeAllWindows.Connect("activate", func() {
 		for _, instance := range instances {
-			address := instance.Address
-			cmd := fmt.Sprintf("dispatch closewindow address:%s", address)
-			reply, _ := hyprctl(cmd)
-			log.Infof("%s -> %s", cmd, reply)
+			closeWindow(instance.Address)
 		}
 	})
 	menu.Append(closeAllWindows)
