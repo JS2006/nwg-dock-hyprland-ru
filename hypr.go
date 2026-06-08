@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -126,8 +127,8 @@ func getActiveWindow() (*client, error) {
 func dispatch(luaCmd string, legacyCmd string) {
 	reply, err := hyprctl(luaCmd)
 
-	// Fall back to legacy
-	if err != nil {
+	// Fall back to legacy if connection error or invalid dispatcher
+	if err != nil || strings.Contains(string(reply), "Invalid dispatcher") {
 		reply, err = hyprctl(legacyCmd)
 	}
 
