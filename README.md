@@ -1,26 +1,13 @@
-# nwg-dock-hyprland
+# nwg-dock-hyprland-ru
 
-This application is a part of the [nwg-shell](https://nwg-piotr.github.io/nwg-shell) project.
+Это русифицированная версия [nwg-dock-hyprland](https://github.com/nwg-piotr/nwg-dock-hyprland) — настраиваемого (через аргументы командной строки и CSS) дока, написанного на Go, предназначенного исключительно для композитора [Hyprland](https://github.com/hyprwm/Hyprland). Док содержит закреплённые кнопки, кнопки клиентов и кнопку лаунчера. Последняя по умолчанию запускает [nwg-drawer](https://github.com/nwg-piotr/nwg-drawer).
 
-**Contributing:** please read the [general contributing rules for the nwg-shell project](https://nwg-piotr.github.io/nwg-shell/contribution).
+This is a Russian-localized version of [nwg-dock-hyprland](https://github.com/nwg-piotr/nwg-dock-hyprland) — a configurable dock (via command line arguments and CSS), written in Go, aimed exclusively at the [Hyprland](https://github.com/hyprwm/Hyprland) Wayland compositor. It features pinned buttons, client buttons and the launcher button. The latter by default starts [nwg-drawer](https://github.com/nwg-piotr/nwg-drawer).
 
-Configurable (w/ command line arguments and css) dock, written in Go, aimed exclusively at the [Hyprland](https://github.com/hyprwm/Hyprland) 
-Wayland compositor. It features pinned buttons, client buttons and the launcher button. The latter by default starts 
-[nwg-drawer](https://github.com/nwg-piotr/nwg-drawer).
+## Отличия от оригинального nwg-dock-hyprland / Differences from original:
 
-You'll find a lot of useful information in [this video](https://youtu.be/16KX3vnbNcg?si=POGOVwYxPXDIrwrT) on the "My Linux For Work" YT channel by Stephan Raabe.
-
-![2023-04-22-021230_hypr_screenshot](https://user-images.githubusercontent.com/20579136/233751336-b5c6abdd-72f7-43c7-b34d-e2f64248eb86.png)
-
-![image](https://user-images.githubusercontent.com/20579136/233751391-97f8f685-55ae-4078-badf-b8c3d7c41ab4.png)
-
-## Differences from nwg-dock for sway:
-
-- instead of swayipc, we use Hyprland IP C, via socket & socket2, to execute hyprctl commands and listen to events;
-- removed the workspace switcher button; AFAIK it's not widely used even on sway. On Hyprland I don't know of a way to check the currently focused workspace, and it would limit the functionality of the button;
-- added highlighting of the button that represents the focused client (permanent docks only);
-- added 2 entries to the context (right click) menu: `togglefloating` and `fullscreen`;
-- fixed searching .desktop files of the names starting from `org.` and the like.
+- **Русификация**: автоматическое определение языка системы (LANG/LC_ALL). При русской локали все сообщения, пункты контекстного меню и описания флагов отображаются на русском языке. При английской — на английском.
+- **Эмодзи-иконка лаунчера**: возможность использовать эмодзи вместо SVG-иконки для кнопки лаунчера. Укажите `-ico emoji:СИМВОЛ`, например `-ico "emoji:🚀"`. Стиль эмодзи-кнопки настраивается через CSS-селектор `#launcher-emoji`.
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/nwg-dock-hyprland.svg)](https://repology.org/project/nwg-dock-hyprland/versions)
 
@@ -91,51 +78,51 @@ auto-start the dock with.*
 $ nwg-dock-hyprland -h
 Usage of nwg-dock-hyprland:
   -a string
-    	Alignment in full width/height: "start", "center" or "end" (default "center")
+        Alignment in full width/height: "start", "center" or "end" (default "center")
   -c string
-    	Command assigned to the launcher button (default "nwg-drawer")
-  -d	auto-hiDe: show dock when hotspot hovered, close when left or a button clicked
+        Command assigned to the launcher button (default "nwg-drawer")
+  -d    auto-hiDe: show dock when hotspot hovered, close when left or a button clicked
   -debug
-    	turn on debug messages
-  -f	take Full screen width/height
+        turn on debug messages
+  -f    take Full screen width/height
   -g string
-    	quote-delimited, space-separated class list to iGnore in the dock
+        quote-delimited, space-separated class list to iGnore in the dock
   -hd int
-    	Hotspot Delay [ms]; the smaller, the faster mouse pointer needs to enter hotspot for the dock to appear; set 0 to disable (default 20)
+        Hotspot Delay [ms]; the smaller, the faster mouse pointer needs to enter hotspot for the dock to appear; set 0 to disable (default 20)
   -hl string
-    	Hotspot Layer "overlay" or "top" (default "overlay")
+        Hotspot Layer "overlay" or "top" (default "overlay")
   -i int
-    	Icon size (default 48)
+        Icon size (default 48)
   -ico string
-    	alternative name or path for the launcher ICOn
+        alternative name or path for the launcher ICOn
   -iw string
-    	Ignore the running applications on these Workspaces based on the workspace's name or id, e.g. "special,10"
+        Ignore the running applications on these Workspaces based on the workspace's name or id, e.g. "special,10"
   -l string
-    	Layer "overlay", "top" or "bottom" (default "overlay")
+        Layer "overlay", "top" or "bottom" (default "overlay")
   -lp string
-    	Launcher button position, 'start' or 'end' (default "end")
-  -m	allow Multiple instances of the dock (skip lock file check)
+        Launcher button position, 'start' or 'end' (default "end")
+  -m    allow Multiple instances of the dock (skip lock file check)
   -mb int
-    	Margin Bottom
+        Margin Bottom
   -ml int
-    	Margin Left
+        Margin Left
   -mr int
-    	Margin Right
+        Margin Right
   -mt int
-    	Margin Top
+        Margin Top
   -nolauncher
-    	don't show the launcher button
+        don't show the launcher button
   -o string
-    	name of Output to display the dock on
+        name of Output to display the dock on
   -p string
-    	Position: "bottom", "top" "left" or "right" (default "bottom")
-  -r	Leave the program resident, but w/o hotspot
+        Position: "bottom", "top" "left" or "right" (default "bottom")
+  -r    Leave the program resident, but w/o hotspot
   -s string
-    	Styling: css file name (default "style.css")
-  -v	display Version information
+        Styling: css file name (default "style.css")
+  -v    display Version information
   -w int
-    	number of Workspaces you use (default 10)
-  -x	set eXclusive zone: move other windows aside; overrides the "-l" argument
+        number of Workspaces you use (default 10)
+  -x    set eXclusive zone: move other windows aside; overrides the "-l" argument
 
 Usage of signals:
  SIGRTMIN+1 (signal 35): toggle dock visibility (USR1 has been deprecated)
@@ -149,6 +136,47 @@ Usage of signals:
 
 Edit `~/.config/nwg-dock-hyprland/style.css` to your taste.
 
+### Эмодзи-иконка лаунчера / Emoji Launcher Icon
+
+To use an emoji instead of the default grid icon for the launcher button, use the `-ico` flag with the `emoji:` prefix:
+
+```bash
+nwg-dock-hyprland -ico "emoji:🚀"
+nwg-dock-hyprland -ico "emoji:⚡"
+nwg-dock-hyprland -ico "emoji:🏠"
+nwg-dock-hyprland -ico "emoji:📱"
+```
+
+The emoji button can be styled in CSS using the `#launcher-emoji` selector:
+
+```css
+#launcher-emoji {
+    font-size: 28px;
+    padding: 4px;
+    min-width: 40px;
+    min-height: 40px;
+    color: #ffffff;
+}
+
+#launcher-emoji:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+}
+```
+
+### Русификация / Russian Localization
+
+The dock automatically detects the system language from the `LANG`, `LC_ALL`, or `LC_MESSAGES` environment variable. When Russian locale (`ru_*`) is detected, all interface elements are displayed in Russian:
+- Command-line flag descriptions
+- Context menu items (Закрепить/Открепить, Новое окно, Закрыть все окна, etc.)
+- Log messages and error notifications
+- Signal usage descriptions
+
+To force English output:
+```bash
+LANG=en_US.UTF-8 nwg-dock-hyprland
+```
+
 ## Troubleshooting
 
 ### An application icon is not displayed
@@ -159,25 +187,25 @@ The only thing the dock knows about the app is it's class name.
 $ hyprctl clients
 (...)
 Window 55a62254b8c0 -> piotr@msi:~:
-	mapped: 1
-	hidden: 0
-	at: 1204,270
-	size: 2552,1402
-	workspace: 6 (6)
-	floating: 0
-	monitor: 2
-	class: foot
-	title: piotr@msi:~
-	initialClass: foot
-	initialTitle: foot
-	pid: 58348
-	xwayland: 0
-	pinned: 0
-	fullscreen: 0
-	fullscreenmode: 0
-	fakefullscreen: 0
-	grouped: 0
-	swallowing: 0
+        mapped: 1
+        hidden: 0
+        at: 1204,270
+        size: 2552,1402
+        workspace: 6 (6)
+        floating: 0
+        monitor: 2
+        class: foot
+        title: piotr@msi:~
+        initialClass: foot
+        initialTitle: foot
+        pid: 58348
+        xwayland: 0
+        pinned: 0
+        fullscreen: 0
+        fullscreenmode: 0
+        fakefullscreen: 0
+        grouped: 0
+        swallowing: 0
 ```
 
 Now it'll look for an icon named 'foot'. If that fails, it'll look for a .desktop file named foot.desktop, which should contain the icon name or path. If this fails as well, no icon will be displayed. I've added workarounds for some most common exceptions, but it's impossible to predict every single application misbehaviour. This is either programmers fault (improper class name), or bad packaging (.desktop file name different from the application class name).
